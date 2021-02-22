@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-
 import { readDeck, deleteDeck, deleteCard } from "../utils/api/index";
 import { Link, useParams, useHistory } from "react-router-dom";
 
 function DeckOverview() {
   const { deckId } = useParams();
   const history = useHistory();
-  const [deckData, setDeckData] = useState();
-  const [cardsList, setCardsList] = useState([]);
+  const [deckData, setDeckData] = useState({ cards: [] });
+  const [cardsList, setCardsList] = useState([deckData.cards]);
 
   useEffect(() => {
     const loadDeck = async () => {
@@ -16,7 +15,7 @@ function DeckOverview() {
       setCardsList(deck.cards);
     };
     loadDeck();
-  }, []);
+  }, [deckId]);
 
   const handleDeleteDeck = async () => {
     if (
@@ -44,13 +43,13 @@ function DeckOverview() {
             <Link to="/">Home</Link>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
-            {deckData ? deckData.name : null}
+            {deckData.name}
           </li>
         </ol>
       </nav>
       <div>
-        <h4>{deckData ? deckData.name : null}</h4>
-        <p>{deckData ? deckData.description : null}</p>
+        <h4>{deckData.name}</h4>
+        <p>{deckData.description}</p>
 
         <Link to={`/decks/${deckId}/edit`} className="btn btn-secondary">
           {``} {``} Edit
