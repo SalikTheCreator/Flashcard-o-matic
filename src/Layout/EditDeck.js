@@ -1,93 +1,80 @@
 import React, { useEffect, useState } from "react";
-import { readDeck, updateDeck } from "../utils/api/index";
-import { Link, useParams, useHistory } from "react-router-dom";
 
-function EditDeck() {
-  const { deckId } = useParams();
-  const history = useHistory();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+import {
 
+  readDeck,
+
+} from "../utils/api/index";
+import {
+  BrowserRouter as Router,
+  Link,
+
+  useParams,
+
+} from "react-router-dom";
+
+function EditDeck(props) {
+  const { deckId } = useParams(); //takes the deckID from the url
+
+  const [deckData, setDeckData] = useState({});
+
+  //code for showing deck name and description
   useEffect(() => {
     const loadDeck = async () => {
       const deck = await readDeck(deckId);
-      setName(deck.name);
-      setDescription(deck.description);
+      setDeckData(deck);
     };
     loadDeck();
-  }, []);
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-
-  const handleDeckUpdate = async (e) => {
-    e.preventDefault();
-    const updatedDeck = {
-      "name": name,
-      "description": description,
-      "id": deckId
-    }
-
-    await updateDeck(updatedDeck);
-    history.push(`/decks/${deckId}`);
-  }
+  }, [deckId]);
 
   return (
-    <div>
+    <div>      
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
             <Link to="/">Home</Link>
           </li>
           <li className="breadcrumb-item">
-            <Link to={`/decks/${deckId}`}>{name}</Link>
+            <a href={`/decks/${deckId}`}>{deckData.name}</a>
           </li>
           <li className="breadcrumb-item active" aria-current="page">
             Edit Deck
           </li>
         </ol>
       </nav>
-
-      <h2>Edit Deck</h2>
+      <h3>Edit Deck</h3>
 
       <form>
         <div className="mb-3">
-          <label htmlFor="exampleName" className="form-label">
+          <label for="exampleInputEmail1" className="form-label">
             Name
           </label>
           <input
             type="text"
-            placeholder="Deck Name"
+            defaultValue={deckData.name}
             className="form-control"
-            value={name}
-            onChange={handleNameChange}
+            id="exampleInputEmail1"
+            aria-describedby="emailHelp"
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleFormControlTextarea1" className="form-label">
+          <label for="exampleFormControlTextarea1" className="form-label">
             Description
           </label>
           <textarea
             className="form-control"
             id="exampleFormControlTextarea1"
             rows="3"
-            placeholder="Brief description of the deck"
-            value={description}
-            onChange={handleDescriptionChange}
+            defaultValue={deckData.description}
           ></textarea>
         </div>
 
-        <Link to="/" className="btn btn-secondary">
+        <Link to={`/decks/${deckId}`} className="btn btn-secondary">
           {``} {``} Cancel
         </Link>
-        <button onClick={handleDeckUpdate} className="btn btn-primary">
+        <Link to={`/decks/${deckId}`} className="btn btn-primary">
           {``} {``} Submit
-        </button>
+        </Link>
       </form>
     </div>
   );
