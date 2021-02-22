@@ -2,30 +2,30 @@ import React, { useState } from "react";
 import { createDeck } from "../utils/api/index";
 import { Link, useHistory } from "react-router-dom";
 
-function NewDeck() {
+function NewDeck({ handleCreateDeck }) {
   const history = useHistory();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const deckObj = {
       name: name,
-      description: description,
-    };
+      description: description
+    }
     const newDeck = await createDeck(deckObj);
     newDeck.cards = [];
-
+    handleCreateDeck(newDeck);
     history.push(`/decks/${newDeck.id}`);
-  };
+  }
 
   const handleNameChange = (e) => {
     setName(e.target.value);
-  };
+  }
 
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
-  };
+  }
 
   return (
     <div>
@@ -47,12 +47,7 @@ function NewDeck() {
           <label htmlFor="exampleName" className="form-label">
             Name
           </label>
-          <input
-            type="text"
-            placeholder="Deck Name"
-            className="form-control"
-            onChange={handleNameChange}
-          />
+          <input type="text" placeholder="Deck Name" className="form-control" onChange={handleNameChange} />
         </div>
         <div className="mb-3">
           <label htmlFor="exampleFormControlTextarea1" className="form-label">
